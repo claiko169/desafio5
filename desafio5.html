@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Desafío 5 - La Gran Pregunta</title>
+  <style>
+    body {
+      background: linear-gradient(135deg, #0d0d0d, #1a1a1a);
+      color: white;
+      font-family: 'Courier New', Courier, monospace;
+      text-align: center;
+      padding: 50px;
+      overflow-x: hidden;
+      transition: background 1s;
+    }
+
+    .album {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 20px;
+      margin-bottom: 40px;
+    }
+
+    .album img {
+      width: 200px;
+      height: auto;
+      border-radius: 20px;
+      box-shadow: 0 0 15px rgba(255, 255, 255, 0.2);
+      transition: transform 0.3s;
+    }
+
+    .album img:hover {
+      transform: scale(1.05);
+    }
+
+    .pregunta {
+      margin-top: 40px;
+    }
+
+    .pregunta img {
+      width: 300px;
+      border-radius: 20px;
+      margin-bottom: 20px;
+    }
+
+    button {
+      padding: 10px 25px;
+      font-size: 1.2em;
+      margin: 10px;
+      border-radius: 10px;
+      border: none;
+      cursor: pointer;
+      background-color: #292929;
+      color: white;
+      transition: transform 0.3s;
+    }
+
+    button:hover {
+      transform: scale(1.1);
+    }
+
+    #botonesSiMultiples {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 30px;
+    }
+
+    .niebla {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 200%;
+      height: 200%;
+      background: url('https://i.imgur.com/O3ZC7qZ.png') repeat;
+      opacity: 0.1;
+      animation: moverNiebla 60s linear infinite;
+      z-index: -1;
+    }
+
+    @keyframes moverNiebla {
+      0% { transform: translate(0, 0); }
+      50% { transform: translate(-50px, -50px); }
+      100% { transform: translate(0, 0); }
+    }
+
+    .siniestro {
+      background: black !important;
+      color: red;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="niebla"></div>
+
+  <h1>Un paseo por nosotros 💫</h1>
+
+  <div class="album">
+    <img src="us.jpg" alt="us1">
+    <img src="us2.jpg" alt="us2">
+    <img src="us3.jpg" alt="us3">
+    <img src="us4.jpg" alt="us4">
+    <img src="us5.jpg" alt="us5">
+  </div>
+
+  <div class="pregunta">
+    <img src="novia.jpg" alt="¿Quieres ser mi novia?">
+    <h2>¿Quieres ser mi novia? ❤️</h2>
+    <button onclick="aceptar()">Sí</button>
+    <button id="noBtn" onclick="rechazar()">No</button>
+  </div>
+
+  <div id="botonesSiMultiples"></div>
+
+  <audio id="musica" autoplay loop>
+    <source src="misteriosa.mp3" type="audio/mpeg">
+  </audio>
+
+  <script>
+    let contadorNo = 0;
+
+    const amenazas = [
+        "¿Estás segura? 👀 Esta podría ser una decisión peligrosa...",
+        "Hmm... cada 'No' es una daga hacia mi 😡",
+        "Estás a punto de despertar algo que no deberías...",
+        "Te lo advertí... no sigas por ahí 👻",
+        "Ahora ya no se trata de elegir... es un destino 😈",
+        "Oh no...",
+        "Tus clics están en la posicion incorrecta...pulsa al otro recuadro",
+        "¿Y si este botón desaparece para siempre? 🔥",
+        "Estas haciendo esto a proposito verdad ?💀",
+        "Última oportunidad... o te arrepentirás...",
+        "¿Sientes eso? Es el aire cambiando... el ambiente oscureciendo...",
+        "Demasiado tarde... el destino ha sido sellado,trate de advertirte 😶‍🌫️"
+    ];
+
+    function aceptar() {
+        window.location.href = "si.html";
+    }
+
+    function rechazar() {
+        contadorNo++;
+
+        if (contadorNo % 3 === 0 && contadorNo < 12) {
+            const index = Math.floor(contadorNo / 3) - 1;
+            alert(amenazas[index] || "Estas a tiempo de cambiar de idea...");
+        }
+
+        if (contadorNo === 12) {
+            document.body.classList.add("siniestro");
+
+            // Cambiar música
+            const audio = document.getElementById("musica");
+            audio.src = "terror.mp3";
+            audio.play();
+
+            // Quitar botón "No"
+            document.getElementById("noBtn").remove();
+
+            // Multiplicar botón "Sí"
+            const zona = document.getElementById("botonesSiMultiples");
+            for (let i = 0; i < 30; i++) {
+                const btn = document.createElement("button");
+                btn.innerText = "SÍ";
+                btn.onclick = aceptar;
+                zona.appendChild(btn);
+            }
+
+            alert("Demasiado tarde... el amor solo tiene una respuesta correcta");
+        }
+    }
+  </script>
+
+</body>
+</html>
