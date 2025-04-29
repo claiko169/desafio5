@@ -10,19 +10,18 @@
     }
 
     body {
-      background: linear-gradient(135deg, #ff9a8b, #ff6a88, #ff4f92);
+      margin: 0;
+      padding: 30px 15px;
+      text-align: center;
       font-family: 'Courier New', Courier, monospace;
       color: white;
-      text-align: center;
-      padding: 30px 15px;
-      margin: 0;
-      transition: background 1s, color 1s;
+      background: radial-gradient(#1e1e2f, #0a0a14);
+      overflow-x: hidden;
     }
 
     h1 {
       font-size: 2.5em;
       margin-bottom: 20px;
-      transition: color 0.5s;
     }
 
     .album {
@@ -128,11 +127,48 @@
       margin-top: 30px;
       min-height: 1.5em;
     }
+
+    .estrella {
+      position: fixed;
+      background: white;
+      width: 2px;
+      height: 2px;
+      border-radius: 50%;
+      animation: parpadeo 2s infinite alternate;
+      opacity: 0.8;
+    }
+
+    @keyframes parpadeo {
+      0% { opacity: 0.3; transform: scale(1); }
+      100% { opacity: 1; transform: scale(1.5); }
+    }
+
+    .musica-btn {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: rgba(255, 255, 255, 0.1);
+      color: white;
+      border: 2px solid white;
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      font-size: 1.5em;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      z-index: 999;
+      backdrop-filter: blur(4px);
+    }
+
+    .musica-btn:hover {
+      background: white;
+      color: black;
+    }
   </style>
 </head>
 <body>
 
-  <h1 id="titulo">¿Podrias contestarme la pregunta de abajo?</h1>
+  <h1 id="titulo">¿Podrías contestarme la pregunta de abajo?</h1>
 
   <div class="album">
     <div class="polaroid">
@@ -141,15 +177,15 @@
     </div>
     <div class="polaroid" style="transform: rotate(2deg);">
       <img src="us2.jpg" alt="Foto 2">
-      <div class="caption">Se convirtio en uno de mis dibujos favoritos jsjsjs 🌟</div>
+      <div class="caption">Uno de mis dibujos favoritos 🌟</div>
     </div>
     <div class="polaroid" style="transform: rotate(-3deg);">
       <img src="us3.jpg" alt="Foto 3">
-      <div class="caption">Tan lejos y tan cerca...(te pasare la fotito si la quieres)</div>
+      <div class="caption">Tan lejos y tan cerca... 💌</div>
     </div>
     <div class="polaroid" style="transform: rotate(1deg);">
       <img src="us4.jpg" alt="Foto 4">
-      <div class="caption">El alien tmb queria recordarte que le gustas mucho 💫</div>
+      <div class="caption">El alien también te quiere 🛸</div>
     </div>
     <div class="polaroid" style="transform: rotate(-1.5deg);">
       <img src="us5.jpg" alt="Foto 5">
@@ -174,25 +210,27 @@
 
   <audio id="efecto" src="glitch.mp3"></audio>
 
+  <button id="btnMusica" class="musica-btn">⏸️</button>
+
   <script>
     let contadorNo = 0;
     const amenazas = [
       "No deberías haber hecho eso.",
       "Te estoy observando.",
-      "jajaja para, este no es el boton de si tontita mia...",
+      "jajaja para, este no es el botón de sí, tontita mía...",
       "¿Por qué sigues pulsando?",
       "No hay escapatoria.",
-      "Esto es solo un juego para ti?",
-      "Enserio para.",
-      "Me estas rompiendo el corazon.",
-      "Porfavor..Ally piensalo.",
+      "¿Esto es solo un juego para ti?",
+      "En serio para.",
+      "Me estás rompiendo el corazón.",
+      "Por favor... Ally piénsalo.",
       "....",
-      "No  te soy suficiente?.",
+      "¿No te soy suficiente?",
       "agh...",
-      "No sigas",
-      "De verdad quieres decir que no?",
-      "Esta bien...ya dejo de insistir",
-      "De verdad creías que te iba a dejar así como así? No... ¡NO TIENES ESCAPATORIA!",
+      "No sigas.",
+      "¿De verdad quieres decir que no?",
+      "Está bien... ya dejo de insistir.",
+      "¿De verdad creías que te iba a dejar así como así? ¡NO TIENES ESCAPATORIA!",
     ];
 
     function aceptar() {
@@ -201,7 +239,6 @@
 
     function negar() {
       contadorNo++;
-
       document.getElementById("efecto").play();
       document.body.style.background = "#000";
       document.body.style.color = "red";
@@ -212,7 +249,6 @@
 
       if (contadorNo === 16) {
         document.getElementById("btnNo").remove();
-
         const musica = document.getElementById("musica");
         musica.src = "terror.mp3";
         musica.play();
@@ -229,6 +265,36 @@
           botonesDiv.appendChild(nuevoBtn);
         }
       }
+    }
+
+    // Botón de pausa/reanudar música
+    const btnMusica = document.getElementById("btnMusica");
+    const musica = document.getElementById("musica");
+    let musicaPausada = false;
+
+    btnMusica.addEventListener("click", () => {
+      if (musicaPausada) {
+        musica.play();
+        btnMusica.textContent = "⏸️";
+      } else {
+        musica.pause();
+        btnMusica.textContent = "▶️";
+      }
+      musicaPausada = !musicaPausada;
+    });
+
+    // Estrellas animadas
+    function crearEstrella() {
+      const estrella = document.createElement("div");
+      estrella.classList.add("estrella");
+      estrella.style.left = Math.random() * window.innerWidth + "px";
+      estrella.style.top = Math.random() * window.innerHeight + "px";
+      estrella.style.animationDuration = `${Math.random() * 3 + 2}s`;
+      document.body.appendChild(estrella);
+    }
+
+    for (let i = 0; i < 100; i++) {
+      crearEstrella();
     }
   </script>
 
