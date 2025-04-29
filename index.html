@@ -10,13 +10,23 @@
     }
 
     body {
-      background: linear-gradient(135deg, #ff9a8b, #ff6a88, #ff4f92);
+      margin: 0;
+      padding: 30px 15px;
       font-family: 'Courier New', Courier, monospace;
       color: white;
       text-align: center;
-      padding: 30px 15px;
-      margin: 0;
+      background: linear-gradient(135deg, #ff9a8b, #ff6a88, #ff4f92);
       transition: background 1s, color 1s;
+      position: relative;
+    }
+
+    canvas#estrellas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
     }
 
     h1 {
@@ -110,9 +120,21 @@
       margin-top: 30px;
       min-height: 1.5em;
     }
+
+    #toggleMusica {
+      margin-top: 20px;
+      background-color: #ffe0f0;
+      color: #8b005d;
+    }
+
+    #toggleMusica:hover {
+      background-color: #ffc1e3;
+    }
   </style>
 </head>
 <body>
+
+  <canvas id="estrellas"></canvas>
 
   <h1 id="titulo">¿Quieres ser mi novia? ❤️</h1>
 
@@ -133,6 +155,8 @@
     <button class="no" id="btnNo" onclick="negar()">No</button>
   </div>
 
+  <button id="toggleMusica" onclick="toggleMusica()">Pausar música ⏸️</button>
+
   <p id="amenaza"></p>
 
   <audio id="musica" autoplay loop>
@@ -143,6 +167,7 @@
 
   <script>
     let contadorNo = 0;
+    let musica = document.getElementById("musica");
     const amenazas = [
       "No deberías haber hecho eso.",
       "Te estoy observando.",
@@ -169,26 +194,20 @@
     function negar() {
       contadorNo++;
 
-      // Sonido y amenaza
       document.getElementById("efecto").play();
       document.body.style.background = "#000";
       document.body.style.color = "red";
       document.getElementById("titulo").style.color = "red";
 
-      // Mostrar amenaza
       const amenaza = amenazas[(contadorNo - 1) % amenazas.length];
       document.getElementById("amenaza").textContent = amenaza;
 
-      // Al llegar a 16 clics
       if (contadorNo === 16) {
         document.getElementById("btnNo").remove();
 
-        // Cambiar música
-        const musica = document.getElementById("musica");
         musica.src = "terror.mp3";
         musica.play();
 
-        // Multiplicar botones "Sí"
         const botonesDiv = document.getElementById("botones");
         for (let i = 0; i < 20; i++) {
           const nuevoBtn = document.createElement("button");
@@ -202,6 +221,57 @@
         }
       }
     }
+
+    function toggleMusica() {
+      const btn = document.getElementById("toggleMusica");
+      if (musica.paused) {
+        musica.play();
+        btn.textContent = "Pausar música ⏸️";
+      } else {
+        musica.pause();
+        btn.textContent = "Reproducir música ▶️";
+      }
+    }
+
+    // Estrellas animadas
+    const canvas = document.getElementById("estrellas");
+    const ctx = canvas.getContext("2d");
+
+    function resizeCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+
+    window.addEventListener("resize", resizeCanvas);
+    resizeCanvas();
+
+    let estrellas = [];
+    for (let i = 0; i < 100; i++) {
+      estrellas.push({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        r: Math.random() * 1.5 + 0.5,
+        alpha: Math.random(),
+        delta: Math.random() * 0.02 + 0.005
+      });
+    }
+
+    function animarEstrellas() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      estrellas.forEach(e => {
+        ctx.beginPath();
+        ctx.globalAlpha = e.alpha;
+        ctx.arc(e.x, e.y, e.r, 0, Math.PI * 2);
+        ctx.fillStyle = "#fff";
+        ctx.fill();
+        e.alpha += e.delta;
+        if (e.alpha <= 0 || e.alpha >= 1) e.delta = -e.delta;
+      });
+      ctx.globalAlpha = 1;
+      requestAnimationFrame(animarEstrellas);
+    }
+
+    animarEstrellas();
   </script>
 
 </body>
