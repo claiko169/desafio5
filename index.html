@@ -3,30 +3,20 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Desafío 5</title>
+  <title>Llego la hora....</title>
   <style>
     * {
       box-sizing: border-box;
     }
 
     body {
-      margin: 0;
-      padding: 30px 15px;
+      background: linear-gradient(135deg, #ff9a8b, #ff6a88, #ff4f92);
       font-family: 'Courier New', Courier, monospace;
       color: white;
       text-align: center;
-      background: linear-gradient(135deg, #ff9a8b, #ff6a88, #ff4f92);
+      padding: 30px 15px;
+      margin: 0;
       transition: background 1s, color 1s;
-      position: relative;
-    }
-
-    canvas#estrellas {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      z-index: -1;
     }
 
     h1 {
@@ -36,23 +26,41 @@
     }
 
     .album {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-      gap: 15px;
-      max-width: 800px;
-      margin: 0 auto;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 25px;
+      margin-top: 30px;
     }
 
-    .album img {
+    .polaroid {
+      background: white;
+      color: black;
+      padding: 10px 10px 30px 10px;
+      border-radius: 10px;
+      width: 160px;
+      box-shadow: 0 8px 16px rgba(0,0,0,0.3);
+      transform: rotate(-2deg);
+      transition: all 0.3s ease;
+      position: relative;
+    }
+
+    .polaroid:hover {
+      transform: rotate(0deg) scale(1.05);
+      z-index: 2;
+    }
+
+    .polaroid img {
       width: 100%;
-      max-width: 150px;
-      border-radius: 15px;
-      box-shadow: 0 0 15px rgba(255, 255, 255, 0.5);
-      transition: transform 0.3s;
+      border-radius: 5px;
+      display: block;
     }
 
-    .album img:hover {
-      transform: scale(1.05);
+    .caption {
+      text-align: center;
+      font-size: 0.9em;
+      margin-top: 10px;
+      color: #444;
     }
 
     .pregunta {
@@ -120,30 +128,33 @@
       margin-top: 30px;
       min-height: 1.5em;
     }
-
-    #toggleMusica {
-      margin-top: 20px;
-      background-color: #ffe0f0;
-      color: #8b005d;
-    }
-
-    #toggleMusica:hover {
-      background-color: #ffc1e3;
-    }
   </style>
 </head>
 <body>
 
-  <canvas id="estrellas"></canvas>
-
-  <h1 id="titulo">¿Quieres ser mi novia? ❤️</h1>
+  <h1 id="titulo">¿Podrias contestarme la pregunta de abajo?</h1>
 
   <div class="album">
-    <img src="us.jpg" alt="Foto 1">
-    <img src="us2.jpg" alt="Foto 2">
-    <img src="us3.jpg" alt="Foto 3">
-    <img src="us4.jpg" alt="Foto 4">
-    <img src="us5.jpg" alt="Foto 5">
+    <div class="polaroid">
+      <img src="us.jpg" alt="Foto 1">
+      <div class="caption">Esa sonrisa que me enamora💖</div>
+    </div>
+    <div class="polaroid" style="transform: rotate(2deg);">
+      <img src="us2.jpg" alt="Foto 2">
+      <div class="caption">Se convirtio en uno de mis dibujos favoritos jsjsjs 🌟</div>
+    </div>
+    <div class="polaroid" style="transform: rotate(-3deg);">
+      <img src="us3.jpg" alt="Foto 3">
+      <div class="caption">Tan lejos y tan cerca...(te pasare la fotito si la quieres)</div>
+    </div>
+    <div class="polaroid" style="transform: rotate(1deg);">
+      <img src="us4.jpg" alt="Foto 4">
+      <div class="caption">El alien tmb queria recordarte que le gustas mucho 💫</div>
+    </div>
+    <div class="polaroid" style="transform: rotate(-1.5deg);">
+      <img src="us5.jpg" alt="Foto 5">
+      <div class="caption">Para ti mi vida 🫶</div>
+    </div>
   </div>
 
   <div class="pregunta">
@@ -155,8 +166,6 @@
     <button class="no" id="btnNo" onclick="negar()">No</button>
   </div>
 
-  <button id="toggleMusica" onclick="toggleMusica()">Pausar música ⏸️</button>
-
   <p id="amenaza"></p>
 
   <audio id="musica" autoplay loop>
@@ -167,14 +176,13 @@
 
   <script>
     let contadorNo = 0;
-    let musica = document.getElementById("musica");
     const amenazas = [
       "No deberías haber hecho eso.",
       "Te estoy observando.",
-      "Cada vez estás más cerca del final...",
+      "jajaja para, este no es el boton de si tontita mia...",
       "¿Por qué sigues pulsando?",
       "No hay escapatoria.",
-      "Esto no es un juego para ti.",
+      "Esto es solo un juego para ti?",
       "Enserio para.",
       "Me estas rompiendo el corazon.",
       "Porfavor..Ally piensalo.",
@@ -205,6 +213,7 @@
       if (contadorNo === 16) {
         document.getElementById("btnNo").remove();
 
+        const musica = document.getElementById("musica");
         musica.src = "terror.mp3";
         musica.play();
 
@@ -221,57 +230,6 @@
         }
       }
     }
-
-    function toggleMusica() {
-      const btn = document.getElementById("toggleMusica");
-      if (musica.paused) {
-        musica.play();
-        btn.textContent = "Pausar música ⏸️";
-      } else {
-        musica.pause();
-        btn.textContent = "Reproducir música ▶️";
-      }
-    }
-
-    // Estrellas animadas
-    const canvas = document.getElementById("estrellas");
-    const ctx = canvas.getContext("2d");
-
-    function resizeCanvas() {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-    }
-
-    window.addEventListener("resize", resizeCanvas);
-    resizeCanvas();
-
-    let estrellas = [];
-    for (let i = 0; i < 100; i++) {
-      estrellas.push({
-        x: Math.random() * canvas.width,
-        y: Math.random() * canvas.height,
-        r: Math.random() * 1.5 + 0.5,
-        alpha: Math.random(),
-        delta: Math.random() * 0.02 + 0.005
-      });
-    }
-
-    function animarEstrellas() {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      estrellas.forEach(e => {
-        ctx.beginPath();
-        ctx.globalAlpha = e.alpha;
-        ctx.arc(e.x, e.y, e.r, 0, Math.PI * 2);
-        ctx.fillStyle = "#fff";
-        ctx.fill();
-        e.alpha += e.delta;
-        if (e.alpha <= 0 || e.alpha >= 1) e.delta = -e.delta;
-      });
-      ctx.globalAlpha = 1;
-      requestAnimationFrame(animarEstrellas);
-    }
-
-    animarEstrellas();
   </script>
 
 </body>
