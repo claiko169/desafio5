@@ -2,67 +2,76 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>Desafío 5 - Puzzle</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Desafío 5</title>
   <style>
+    * {
+      box-sizing: border-box;
+    }
+
     body {
       background: linear-gradient(135deg, #ff9a8b, #ff6a88, #ff4f92);
       font-family: 'Courier New', Courier, monospace;
       color: white;
       text-align: center;
-      padding: 20px;
+      padding: 30px 15px;
+      margin: 0;
       transition: background 1s, color 1s;
     }
 
     h1 {
       font-size: 2.5em;
       margin-bottom: 20px;
+      transition: color 0.5s;
     }
 
-    #puzzle {
+    .album {
       display: grid;
-      grid-template-columns: repeat(5, 60px);
-      grid-template-rows: repeat(5, 60px);
-      gap: 5px;
-      justify-content: center;
-      margin-bottom: 20px;
+      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+      gap: 15px;
+      max-width: 800px;
+      margin: 0 auto;
     }
 
-    .pieza {
-      width: 60px;
-      height: 60px;
-      border-radius: 5px;
-      background-size: cover;
-      cursor: pointer;
+    .album img {
+      width: 100%;
+      max-width: 150px;
+      border-radius: 15px;
+      box-shadow: 0 0 15px rgba(255, 255, 255, 0.5);
+      transition: transform 0.3s;
     }
 
-    #mensaje {
-      display: none;
-      margin-top: 30px;
+    .album img:hover {
+      transform: scale(1.05);
     }
 
     .pregunta {
-      margin-top: 20px;
+      margin-top: 40px;
     }
 
     .pregunta img {
       width: 200px;
       border-radius: 20px;
+      box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
     }
 
     .botones {
-      margin-top: 20px;
-      position: relative;
-      z-index: 10;
+      margin-top: 25px;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 15px;
     }
 
     button {
       padding: 12px 25px;
-      font-size: 1em;
-      margin: 10px;
+      font-size: 1.2em;
       border: none;
       border-radius: 25px;
       cursor: pointer;
+      transition: all 0.3s ease;
+      z-index: 10;
+      position: relative;
     }
 
     .si {
@@ -70,15 +79,17 @@
       color: #003300;
     }
 
+    .si:hover {
+      background-color: #8fffaa;
+    }
+
     .no {
       background-color: #ff6a6a;
       color: white;
     }
 
-    #musicaBtn {
-      margin-top: 20px;
-      background: white;
-      color: #ff6a88;
+    .no:hover {
+      background-color: #ff5050;
     }
 
     .glitch {
@@ -93,29 +104,36 @@
       80% { transform: translate(2px, 2px); }
       100% { transform: translate(0); }
     }
+
+    #amenaza {
+      font-size: 1.2em;
+      margin-top: 30px;
+      min-height: 1.5em;
+    }
   </style>
 </head>
 <body>
 
-  <h1 id="titulo">Completa el puzzle con nuestras fotos ❤️</h1>
-  <p>Une correctamente todas las piezas para desbloquear la pregunta especial...</p>
+  <h1 id="titulo">¿Quieres ser mi novia? ❤️</h1>
 
-  <div id="puzzle"></div>
-
-  <div id="mensaje">
-    <div class="pregunta">
-      <img src="novia.jpg" alt="pregunta">
-      <h2>¡Quieres ser mi novia?</h2>
-    </div>
-    <div class="botones" id="botones">
-      <button class="si" onclick="aceptar()">Sí</button>
-      <button class="no" id="btnNo" onclick="negar()">No</button>
-    </div>
+  <div class="album">
+    <img src="us.jpg" alt="Foto 1">
+    <img src="us2.jpg" alt="Foto 2">
+    <img src="us3.jpg" alt="Foto 3">
+    <img src="us4.jpg" alt="Foto 4">
+    <img src="us5.jpg" alt="Foto 5">
   </div>
 
-  <p id="amenaza" style="font-size: 1.5em; margin-top: 30px;"></p>
+  <div class="pregunta">
+    <img src="novia.jpg" alt="Novia">
+  </div>
 
-  <button id="musicaBtn" onclick="toggleMusica()">Pausar/Reanudar Música</button>
+  <div class="botones" id="botones">
+    <button class="si" id="btnSi" onclick="aceptar()">Sí</button>
+    <button class="no" id="btnNo" onclick="negar()">No</button>
+  </div>
+
+  <p id="amenaza"></p>
 
   <audio id="musica" autoplay loop>
     <source src="si.mp3" type="audio/mpeg">
@@ -124,59 +142,6 @@
   <audio id="efecto" src="glitch.mp3"></audio>
 
   <script>
-    const piezas = [];
-    const imagenes = ['us.jpg', 'us2.jpg', 'us3.jpg', 'us4.jpg', 'us5.jpg'];
-
-    for (let i = 0; i < 25; i++) {
-      piezas.push({ img: imagenes[Math.floor(Math.random() * imagenes.length)], index: i });
-    }
-
-    piezas.sort(() => Math.random() - 0.5);
-
-    const puzzleDiv = document.getElementById("puzzle");
-
-    piezas.forEach((pieza, i) => {
-      const div = document.createElement("div");
-      div.classList.add("pieza");
-      div.style.backgroundImage = `url('${pieza.img}')`;
-      div.setAttribute("draggable", "true");
-      div.dataset.index = i;
-      puzzleDiv.appendChild(div);
-    });
-
-    let dragSrc = null;
-
-    document.querySelectorAll(".pieza").forEach(pieza => {
-      pieza.addEventListener("dragstart", function (e) {
-        dragSrc = this;
-      });
-      pieza.addEventListener("dragover", function (e) {
-        e.preventDefault();
-      });
-      pieza.addEventListener("drop", function (e) {
-        e.preventDefault();
-        if (dragSrc !== this) {
-          const tempBg = dragSrc.style.backgroundImage;
-          dragSrc.style.backgroundImage = this.style.backgroundImage;
-          this.style.backgroundImage = tempBg;
-          checkPuzzle();
-        }
-      });
-    });
-
-    function checkPuzzle() {
-      const piezasActuales = document.querySelectorAll(".pieza");
-      const primera = piezasActuales[0].style.backgroundImage;
-      const completo = [...piezasActuales].every(p => p.style.backgroundImage === primera);
-      if (completo) {
-        document.getElementById("mensaje").style.display = "block";
-      }
-    }
-
-    function aceptar() {
-      window.location.href = "si.html";
-    }
-
     let contadorNo = 0;
     const amenazas = [
       "No deberías haber hecho eso.",
@@ -185,35 +150,45 @@
       "¿Por qué sigues pulsando?",
       "No hay escapatoria.",
       "Esto no es un juego para ti.",
-      "En serio, para.",
-      "Me estás rompiendo el corazón.",
-      "Por favor... Ally, piénsalo.",
+      "Enserio para.",
+      "Me estas rompiendo el corazon.",
+      "Porfavor..Ally piensalo.",
       "....",
-      "¿No te soy suficiente?",
+      "No  te soy suficiente?.",
       "agh...",
       "No sigas",
-      "¿De verdad quieres decir que no?",
-      "Está bien... ya dejo de insistir",
-      "¡No tienes escapatoria!"
+      "De verdad quieres decir que no?",
+      "Esta bien...ya dejo de insistir",
+      "De verdad creías que te iba a dejar así como así? No... ¡NO TIENES ESCAPATORIA!",
     ];
+
+    function aceptar() {
+      window.location.href = "https://claiko169.github.io/si/";
+    }
 
     function negar() {
       contadorNo++;
 
+      // Sonido y amenaza
       document.getElementById("efecto").play();
       document.body.style.background = "#000";
       document.body.style.color = "red";
       document.getElementById("titulo").style.color = "red";
 
+      // Mostrar amenaza
       const amenaza = amenazas[(contadorNo - 1) % amenazas.length];
       document.getElementById("amenaza").textContent = amenaza;
 
+      // Al llegar a 16 clics
       if (contadorNo === 16) {
         document.getElementById("btnNo").remove();
+
+        // Cambiar música
         const musica = document.getElementById("musica");
         musica.src = "terror.mp3";
         musica.play();
 
+        // Multiplicar botones "Sí"
         const botonesDiv = document.getElementById("botones");
         for (let i = 0; i < 20; i++) {
           const nuevoBtn = document.createElement("button");
@@ -227,17 +202,7 @@
         }
       }
     }
-
-    function toggleMusica() {
-      const musica = document.getElementById("musica");
-      if (musica.paused) {
-        musica.play();
-      } else {
-        musica.pause();
-      }
-    }
   </script>
 
 </body>
 </html>
-   
