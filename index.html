@@ -2,31 +2,35 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>Desafío 5 - La Gran Pregunta</title>
+  <title>Desafío 5</title>
   <style>
     body {
-      background: linear-gradient(135deg, #0d0d0d, #1a1a1a);
-      color: white;
+      background: linear-gradient(135deg, #ff9a8b, #ff6a88, #ff4f92);
       font-family: 'Courier New', Courier, monospace;
+      color: white;
       text-align: center;
       padding: 50px;
-      overflow-x: hidden;
-      transition: background 1s;
+      transition: background 1s, color 1s;
+      overflow: hidden;
+    }
+
+    h1 {
+      font-size: 3em;
+      margin-bottom: 20px;
+      transition: color 0.5s;
     }
 
     .album {
       display: flex;
       flex-wrap: wrap;
       justify-content: center;
-      gap: 20px;
-      margin-bottom: 40px;
+      gap: 15px;
     }
 
     .album img {
-      width: 200px;
-      height: auto;
-      border-radius: 20px;
-      box-shadow: 0 0 15px rgba(255, 255, 255, 0.2);
+      width: 150px;
+      border-radius: 15px;
+      box-shadow: 0 0 15px rgba(255, 255, 255, 0.5);
       transition: transform 0.3s;
     }
 
@@ -39,140 +43,143 @@
     }
 
     .pregunta img {
-      width: 300px;
+      width: 200px;
       border-radius: 20px;
-      margin-bottom: 20px;
+    }
+
+    .botones {
+      margin-top: 20px;
     }
 
     button {
-      padding: 10px 25px;
+      padding: 15px 30px;
       font-size: 1.2em;
       margin: 10px;
-      border-radius: 10px;
       border: none;
+      border-radius: 25px;
       cursor: pointer;
-      background-color: #292929;
+      transition: all 0.3s ease;
+      z-index: 10;
+      position: relative;
+    }
+
+    .si {
+      background-color: #a3ffba;
+      color: #003300;
+    }
+
+    .no {
+      background-color: #ff6a6a;
       color: white;
-      transition: transform 0.3s;
     }
 
-    button:hover {
-      transform: scale(1.1);
+    .glitch {
+      animation: glitch 0.3s infinite;
     }
 
-    #botonesSiMultiples {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 10px;
-      margin-top: 30px;
-    }
-
-    .niebla {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 200%;
-      height: 200%;
-      background: url('https://i.imgur.com/O3ZC7qZ.png') repeat;
-      opacity: 0.1;
-      animation: moverNiebla 60s linear infinite;
-      z-index: -1;
-    }
-
-    @keyframes moverNiebla {
-      0% { transform: translate(0, 0); }
-      50% { transform: translate(-50px, -50px); }
-      100% { transform: translate(0, 0); }
-    }
-
-    .siniestro {
-      background: black !important;
-      color: red;
+    @keyframes glitch {
+      0% { transform: translate(0); }
+      20% { transform: translate(-2px, 2px); }
+      40% { transform: translate(2px, -2px); }
+      60% { transform: translate(-2px, -2px); }
+      80% { transform: translate(2px, 2px); }
+      100% { transform: translate(0); }
     }
   </style>
 </head>
 <body>
 
-  <div class="niebla"></div>
-
-  <h1>Un paseo por nosotros 💫</h1>
+  <h1 id="titulo">¿Quieres ser mi novia? ❤️</h1>
 
   <div class="album">
-    <img src="us.jpg" alt="us1">
-    <img src="us2.jpg" alt="us2">
-    <img src="us3.jpg" alt="us3">
-    <img src="us4.jpg" alt="us4">
-    <img src="us5.jpg" alt="us5">
+    <img src="us.jpg">
+    <img src="us2.jpg">
+    <img src="us3.jpg">
+    <img src="us4.jpg">
+    <img src="us5.jpg">
   </div>
 
   <div class="pregunta">
-    <img src="novia.jpg" alt="¿Quieres ser mi novia?">
-    <h2>¿Quieres ser mi novia? ❤️</h2>
-    <button onclick="aceptar()">Sí</button>
-    <button id="noBtn" onclick="rechazar()">No</button>
+    <img src="novia.jpg">
   </div>
 
-  <div id="botonesSiMultiples"></div>
+  <div class="botones" id="botones">
+    <button class="si" id="btnSi" onclick="aceptar()">Sí</button>
+    <button class="no" id="btnNo" onclick="negar()">No</button>
+  </div>
+
+  <p id="amenaza" style="font-size: 1.5em; margin-top: 30px;"></p>
 
   <audio id="musica" autoplay loop>
-    <source src="misteriosa.mp3" type="audio/mpeg">
+    <source src="si.mp3" type="audio/mpeg">
   </audio>
+
+  <audio id="efecto" src="glitch.mp3"></audio>
 
   <script>
     let contadorNo = 0;
-
     const amenazas = [
-        "¿Estás segura? 👀 Esta podría ser una decisión peligrosa...",
-        "Hmm... cada 'No' es una daga hacia mi 😡",
-        "Estás a punto de despertar algo que no deberías...",
-        "Te lo advertí... no sigas por ahí 👻",
-        "Ahora ya no se trata de elegir... es un destino 😈",
-        "Oh no...",
-        "Tus clics están en la posicion incorrecta...pulsa al otro recuadro",
-        "¿Y si este botón desaparece para siempre? 🔥",
-        "Estas haciendo esto a proposito verdad ?💀",
-        "Última oportunidad... o te arrepentirás...",
-        "¿Sientes eso? Es el aire cambiando... el ambiente oscureciendo...",
-        "Demasiado tarde... el destino ha sido sellado,trate de advertirte 😶‍🌫️"
+      "No deberías haber hecho eso.",
+      "Te estoy observando.",
+      "Cada vez estás más cerca del final...",
+      "¿Por qué sigues pulsando?",
+      "No hay escapatoria.",
+      "Esto no es un juego para ti.",
+      "Enserio para.",
+      "Me estas rompiendo el corazon.",
+      "Porfavor..Ally piensalo.",
+      "....",
+      "No  te soy suficiente?.",
+      "agh...",
+      "No sigas",
+      "De verdad quieres decir que no?",
+      "Esta bien...ya dejo de insistir",
+      "De verdad creias que te iba a dejar asi como asi?No....NO TIENES ESCAPATORIA",
     ];
 
     function aceptar() {
-        window.location.href = "si.html";
+      window.location.href = "https://claiko169.github.io/si/";
     }
 
-    function rechazar() {
-        contadorNo++;
+    function negar() {
+      contadorNo++;
 
-        if (contadorNo % 3 === 0 && contadorNo < 12) {
-            const index = Math.floor(contadorNo / 3) - 1;
-            alert(amenazas[index] || "Estas a tiempo de cambiar de idea...");
+      // Sonido y amenaza
+      document.getElementById("efecto").play();
+      document.body.style.background = "#000";
+      document.body.style.color = "red";
+      document.getElementById("titulo").style.color = "red";
+
+      // Mostrar amenaza
+      const amenaza = amenazas[(contadorNo - 1) % amenazas.length];
+      document.getElementById("amenaza").textContent = amenaza;
+
+      // Al llegar a 16 clics
+      if (contadorNo === 16) {
+        document.getElementById("btnNo").remove();
+
+        // Cambiar música
+        const musica = document.getElementById("musica");
+        musica.src = "terror.mp3";
+        musica.play();
+
+        // Multiplicar botones "Sí"
+        const botonesDiv = document.getElementById("botones");
+        for (let i = 0; i < 20; i++) {
+          const nuevoBtn = document.createElement("button");
+          nuevoBtn.className = "si glitch";
+          nuevoBtn.textContent = "Sí";
+          nuevoBtn.onclick = aceptar;
+          nuevoBtn.style.position = "absolute";
+          nuevoBtn.style.left = Math.random() * window.innerWidth + "px";
+          nuevoBtn.style.top = Math.random() * window.innerHeight + "px";
+          botonesDiv.appendChild(nuevoBtn);
         }
-
-        if (contadorNo === 12) {
-            document.body.classList.add("siniestro");
-
-            // Cambiar música
-            const audio = document.getElementById("musica");
-            audio.src = "terror.mp3";
-            audio.play();
-
-            // Quitar botón "No"
-            document.getElementById("noBtn").remove();
-
-            // Multiplicar botón "Sí"
-            const zona = document.getElementById("botonesSiMultiples");
-            for (let i = 0; i < 30; i++) {
-                const btn = document.createElement("button");
-                btn.innerText = "SÍ";
-                btn.onclick = aceptar;
-                zona.appendChild(btn);
-            }
-
-            alert("Demasiado tarde... el amor solo tiene una respuesta correcta");
-        }
+      }
     }
   </script>
 
 </body>
 </html>
+
+   
